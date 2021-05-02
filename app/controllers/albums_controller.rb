@@ -4,12 +4,28 @@ class AlbumsController < ApplicationController
   # GET /albums
   def index
     
-    @albums = Album.all
-    @all_ratings = Album.all_ratings  
-    params[:ratings] #need to pull info from the params hash
-    params[:sort]#use the info to query the model
-    #session[] #how to access cookies 
+    @albums = Album.order(params[:sort])
+    @all_ratings = Album.all_ratings
+    @ratings_to_show = params[:ratings]|| {}
+    id = params[:ratings] #need to pull info from the params hash
+    sort = params[:sort]#use the info to query the model
+    #session[] #how to access cookies
+    if params[:search]
+        search_albums
+    end
+    case sort
+    when 'artist'
+      ordering,@artist_header = {:artist => :asc}, 'bg-warning hilite'
+    when 'release_date'
+      ordering,@date_header = {:release_date => :asc}, 'bg-warning hilite'
+    end
   end
+    
+    def search_albums
+        if @album = Album.all.find{|album|album.artist.include? (params[:search])}
+            redirect_to album_path(@album)
+        end
+    end
 
   # GET /albums/1
   def show
