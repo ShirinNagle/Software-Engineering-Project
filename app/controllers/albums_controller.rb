@@ -3,11 +3,18 @@ class AlbumsController < ApplicationController
 
   # GET /albums
   def index
+    
     @albums = Album.all
+    @all_ratings = Album.all_ratings  
+    params[:ratings] #need to pull info from the params hash
+    params[:sort]#use the info to query the model
+    #session[] #how to access cookies 
   end
 
   # GET /albums/1
   def show
+      id = params[:id] #retrieve album Id from URI route
+      @album = Album.find(id) # look up album by unique id
   end
 
   # GET /albums/new
