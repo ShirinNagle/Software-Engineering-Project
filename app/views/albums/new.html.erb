@@ -1,5 +1,18 @@
-<h1>New Album</h1>
+<h1>Create New Album</h1>
 
-<%= render 'form' %>
-
-<%= link_to 'Back', albums_path %>
+<%= form_tag albums_path, :class => 'form' do %>
+   <%= label :album, :artist, 'Artist', :class => 'col-form-label' %>
+  <%= text_field :album, :artist, :class => 'form-control' %>
+  <%= label :album, :title, 'Title', :class => 'col-form-label' %>
+  <%= text_field :album, :title, :class => 'form-control' %>
+  <%= label :album, :review, 'Review', :class => 'col-form-label' %>
+  <%= text_field :album, :review, :class => 'form-control' %>
+  <%= label :album, :rating, 'Rating', :class => 'col-form-label'  %>
+  <%= select :album, :rating, ['0','1','2','3','4', '5'], {}, {:class => 'form-control col-1'} %>
+  
+  <%= label :album, :release_date, 'Released On', :class => 'col-form-label'  %>
+  <%= date_select :album, :release_date, {}, :class => 'form-control col-2 d-inline' %>
+  <br/>
+  <%= submit_tag 'Save Changes', :class => 'btn btn-primary' %>
+  <%= link_to 'Cancel', albums_path, :class => 'btn btn-secondary' %>
+<% end %>

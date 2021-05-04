@@ -18,12 +18,12 @@
     <%= submit_tag ("Search"), class: 'btn btn-primary' %>
 <% end %>
 
-<table>
+<table class="table table-striped col-md-12" id="albums">
   <thead>
     <tr>
       <th>
           
-          <%= link_to 'Artist', :sort=> 'artist'%>
+          <%= link_to 'Artist', :sort=> 'artist'%> 
         </th>
       <th>
           <%= link_to 'Title', :sort=> 'title'%>
@@ -45,8 +45,8 @@
         <td><%= album.review %></td>
         <td><%= album.rating %></td>
         <td><%= album.release_date %></td>
-        <td><%= link_to 'Show', album %></td>
-        <td><%= link_to 'Edit', edit_album_path(album) %></td>
+        <td><%= link_to 'Show', album %> | </td> 
+        <td><%= link_to 'Edit', edit_album_path(album) %> | </td> 
         <td><%= link_to 'Delete', album, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
@@ -55,4 +55,5 @@
 
 <br>
 
-<%= link_to 'New Album', new_album_path %>
+<%= link_to 'Add New Album', new_album_path %>
+

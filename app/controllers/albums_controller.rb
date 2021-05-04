@@ -9,7 +9,8 @@ class AlbumsController < ApplicationController
     @ratings_to_show = params[:ratings]|| {}
     id = params[:ratings] #need to pull info from the params hash
     sort = params[:sort]#use the info to query the model
-    #session[] #how to access cookies
+    #session[:ratings] #how to access cookies
+     
     if params[:search]
         search_albums
     end
@@ -20,11 +21,21 @@ class AlbumsController < ApplicationController
       ordering,@date_header = {:release_date => :asc}, 'bg-warning hilite'
     end
   end
+    #show clicked ratings
+    #if @ratings_to_show
+      # @ratings_to_show = params[:ratings]
+    #else
+      # @ratings_to_show = Hash[@all_ratings.map{|key| [key, 1]}]
+   # end
     
     def search_albums
         if @album = Album.all.find{|album|album.artist.include? (params[:search])}
             redirect_to album_path(@album)
+        else
+            flash[:warning] = "Artis not found in Albums"
+            redirect_to albums_path
         end
+        
     end
 
   # GET /albums/1
@@ -47,10 +58,15 @@ class AlbumsController < ApplicationController
     @album = Album.new(album_params)
 
     if @album.save
-      redirect_to @album, notice: 'Album was successfully created.'
+      #redirect_to @album, notice: 'Album was successfully created.'#routes to the album location in db
+      redirect_to albums_path, notice: 'Album was successfully created.'
     else
       render :new
     end
+      
+      
+      
+      
   end
 
   # PATCH/PUT /albums/1
