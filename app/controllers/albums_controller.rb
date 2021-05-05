@@ -3,23 +3,37 @@ class AlbumsController < ApplicationController
 
   # GET /albums
   def index
-    
-    @albums = Album.order(params[:sort])
-    @all_ratings = Album.all_ratings
-    @ratings_to_show = params[:ratings]|| {}
-    id = params[:ratings] #need to pull info from the params hash
-    sort = params[:sort]#use the info to query the model
-    #session[:ratings] #how to access cookies
-     
-    if params[:search]
-        search_albums
-    end
-    case sort
+    sort = params[:sort] || session[:sort]#use the info to query the model
+        case sort
     when 'artist'
       ordering,@artist_header = {:artist => :asc}, 'bg-warning hilite'
     when 'release_date'
       ordering,@date_header = {:release_date => :asc}, 'bg-warning hilite'
+    when 'title'
+      ordering,@title_header = {:title => :asc}, 'bg-warning hilite'
+    end  
+   
+    @all_ratings = Album.all_ratings
+   
+    @ratings_to_show = params[:ratings] || session[:ratings] || {}
+      
+      if @ratings_to_show == {}
+          @ratings_to_show = Hash[@all_ratings.map {|rating| [rating, rating]}]
+          #@ratings_to_show = Hash[@ratings_to_show.map {|rating| [rating, rating]}]
+      end
+    
+    if params[:sort] != session[:sort] or params[:ratings] != session[:ratings]
+      session[:sort] = sort
+      session[:ratings] = @ratings_to_show
+      redirect_to :sort => sort, :ratings => @ratings_to_show and return
     end
+      
+      
+    if params[:search]
+        search_albums
+    end
+       #@albums = Album.order(params[:sort])
+      @albums = Album.where(rating: @ratings_to_show.keys).order(ordering)
   end
     #show clicked ratings
     #if @ratings_to_show
@@ -32,7 +46,7 @@ class AlbumsController < ApplicationController
         if @album = Album.all.find{|album|album.artist.include? (params[:search])}
             redirect_to album_path(@album)
         else
-            flash[:warning] = "Artis not found in Albums"
+            flash[:warning] = "Artist not found in Albums"
             redirect_to albums_path
         end
         
