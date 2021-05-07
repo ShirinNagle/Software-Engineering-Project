@@ -1,0 +1,32 @@
+<h2>Albums with same artist</h2>
+<table class="table table-striped col-md-12" id="albums">
+  <thead>
+    <tr>
+      <th>Album Title</th>
+      <th>Rating</th>
+      <th>Artist</th>
+      <th>Release Date</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    <% @albums.each do |album| %>
+      <tr>
+        <td>
+          <%= album.title %>
+        </td>
+        <td>
+          <%= album.rating %>
+        </td>
+        <td>
+          <%= album.artist %>
+        </td>
+        <td>
+          <%= album.release_date %>
+        </td>
+        <td>
+          <%= link_to "More about #{album.title}", album_path(album) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>

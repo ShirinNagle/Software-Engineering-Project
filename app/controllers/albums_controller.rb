@@ -21,35 +21,33 @@ class AlbumsController < ApplicationController
           @ratings_to_show = Hash[@all_ratings.map {|rating| [rating, rating]}]
           #@ratings_to_show = Hash[@ratings_to_show.map {|rating| [rating, rating]}]
       end
-    
-    if params[:sort] != session[:sort] or params[:ratings] != session[:ratings]
+    if params[:search]
+       search_albums
+    elsif params[:sort] != session[:sort] or params[:ratings] != session[:ratings]
       session[:sort] = sort
       session[:ratings] = @ratings_to_show
       redirect_to :sort => sort, :ratings => @ratings_to_show and return
     end
       
-      
-    if params[:search]
-        search_albums
-    end
-       #@albums = Album.order(params[:sort])
       @albums = Album.where(rating: @ratings_to_show.keys).order(ordering)
+      
   end
-    #show clicked ratings
-    #if @ratings_to_show
-      # @ratings_to_show = params[:ratings]
-    #else
-      # @ratings_to_show = Hash[@all_ratings.map{|key| [key, 1]}]
-   # end
     
     def search_albums
-        if @album = Album.all.find{|album|album.artist.include? (params[:search])}
+        #@albums = Album.find params[:id]
+        if @album = Album.all.find{|album|album.title.include? (params[:search])}
             redirect_to album_path(@album)
         else
-            flash[:warning] = "Artist not found in Albums"
+            flash[:warning] = "Title not found in Albums"
             redirect_to albums_path
         end
         
+    end
+    def search_db
+        #simulate failure for sad path
+        #flash[:warning] = "'#{params[:search]}' was not found in Albums Database"
+        #redirect_to albums_path
+        @albums = Album.find_in_db(params[:search])
     end
 
   # GET /albums/1
@@ -77,10 +75,6 @@ class AlbumsController < ApplicationController
     else
       render :new
     end
-      
-      
-      
-      
   end
 
   # PATCH/PUT /albums/1
